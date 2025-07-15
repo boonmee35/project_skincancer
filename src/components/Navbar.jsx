@@ -11,7 +11,7 @@ function StickyNavbar() {
   const isLoggedIn = localStorage.getItem("token") !== null;
 
   const userData = JSON.parse(localStorage.getItem("user"));
-  const fullname = userData?.fullname || "Guest";
+  const fullname = userData?.fullname;
 
   const handleLogout = () => {
     localStorage.removeItem("user");
