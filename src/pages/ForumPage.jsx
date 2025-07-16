@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import StickyNavbar from "../components/Navbar";
 import PostModal from "../components/PostModal";
 import axios from "axios";
+import PostViewModal from "../components/PostViewModal";
+
+import { useAuth } from "../contexts/AuthContext";
 
 const ForumPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -59,7 +64,6 @@ const ForumPage = () => {
               </svg>
               ประวัติการโพสต์
             </li>
-            {/* Add more categories here if needed */}
           </ul>
         </aside>
 
@@ -81,6 +85,10 @@ const ForumPage = () => {
             <div
               key={index}
               className="bg-white rounded-xl p-6 shadow-lg mb-6 hover:shadow-xl transition-shadow duration-300"
+              onClick={() => {
+                setSelectedPostId(post.post_id);
+                setViewModalOpen(true);
+              }}
             >
               <div className="flex items-center gap-3 mb-4">
                 <img
@@ -93,7 +101,7 @@ const ForumPage = () => {
                 />
                 <div>
                   <div className="font-semibold text-base text-gray-800">
-                    {post.author || "ผู้ใช้"}
+                    {post.fullname}
                   </div>
                   <div className="text-xs text-gray-500">
                     {post.created_at
@@ -103,9 +111,6 @@ const ForumPage = () => {
                 </div>
               </div>
 
-              <h3 className="font-bold text-xl text-gray-900 mb-2">
-                {post.title}
-              </h3>
               <p className="text-gray-700 text-base leading-relaxed mb-4">
                 {post.content}
               </p>
@@ -114,7 +119,7 @@ const ForumPage = () => {
               {post.image_url && (
                 <img
                   src={post.image_url}
-                  alt={post.title}
+                  alt={post.post_id}
                   className="w-full mt-4 rounded-lg shadow-md max-h-80 object-cover"
                 />
               )}
@@ -148,7 +153,6 @@ const ForumPage = () => {
             />
             <div className="text-center">
               <div className="font-bold text-xl text-gray-900">User</div>
-              <div className="text-sm text-gray-500">@username</div>
             </div>
           </div>
           <button className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-lg w-full mb-6 shadow-md hover:shadow-lg transition-all duration-300">
@@ -178,6 +182,12 @@ const ForumPage = () => {
           onClose={() => setShowModal(false)}
           onSave={handleSavePost}
         />
+
+        <PostViewModal
+  isOpen={viewModalOpen}
+  onClose={() => setViewModalOpen(false)}
+  postId={selectedPostId}
+/>
       </div>
     </>
   );

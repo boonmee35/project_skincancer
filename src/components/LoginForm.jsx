@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  console.log("API URL:", apiUrl);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,16 +22,16 @@ function LoginForm() {
       });
 
       if (response.data) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        toast.success("เข้าสู่ระบบสำเร็จ");
-        setTimeout(() => {
-          if (response.data.user.role === "user") {
-            navigate("/");
-          } else {
-            navigate("/admin");
-          }
-        }, 1000);
+  login(response.data.token, response.data.user);
+  toast.success("เข้าสู่ระบบสำเร็จ");
+
+  setTimeout(() => {
+    if (response.data.user.role === "user") {
+      navigate("/");
+    } else {
+      navigate("/admin");
+    }
+  }, 1500);
       } else {
         toast.error(`เข้าสู่ระบบล้มเหลว: ${response.data.error}`);
       }
@@ -77,28 +77,17 @@ function LoginForm() {
         >
           เข้าสู่ระบบ
         </button>
-        
+
         <div className="text-center mt-2">
-          <Link to="/forgot-password" className="text-sm text-teal-700 cursor-pointer hover:underline" >
-          ลืมรหัสผ่าน ?
-        </Link>
+          <Link
+            to="/forgot-password"
+            className="text-sm text-teal-700 cursor-pointer hover:underline"
+          >
+            ลืมรหัสผ่าน ?
+          </Link>
         </div>
       </form>
 
-      {/* Toast Notification */}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
     </>
   );
 }

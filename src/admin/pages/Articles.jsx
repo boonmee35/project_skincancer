@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FaSearch, FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
 import Pagination from "../components/Pagination";
 import ArticleModal from "../components/ArticleModal";
-import { ToastContainer, toast, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 function Articles() {
   const [articles, setArticles] = useState([]);
@@ -108,6 +107,7 @@ function Articles() {
 
 
   return (
+
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto bg-white shadow rounded-lg p-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">จัดการบทความ</h1>
@@ -196,21 +196,6 @@ function Articles() {
       )}
 
       </div>
-
-      {/*Toast Notification */}
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-              transition={Bounce}
-            />
 
     </div>
   );
