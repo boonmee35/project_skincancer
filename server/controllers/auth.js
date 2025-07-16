@@ -55,3 +55,44 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Login failed' });
   }
 };
+
+// ✅ Step 1: ตรวจสอบอีเมล
+exports.verifyEmail = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ message: "กรุณากรอกอีเมล" });
+
+  try {
+    const [rows] = await connection.promise().query("SELECT * FROM users WHERE email = ?", [email]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "ไม่พบอีเมลนี้ในระบบ" });
+    }
+
+    return res.json({ step: 2, message: "ยืนยันอีเมลสำเร็จ" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาดในเซิร์ฟเวอร์" });
+  }
+};
+
+// ✅ Step 2: รีเซ็ตรหัสผ่าน
+exports.resetPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  if (!email || !newPassword) {
+    return res.status(400).json({ message: "กรุณากรอกข้อมูลให้ครบ" });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await connection.promise().query("UPDATE users SET password = ? WHERE email = ?", [hashedPassword, email]);
+
+    return res.json({ step: 3, message: "รีเซ็ตรหัสผ่านเรียบร้อยแล้ว" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาดในเซิร์ฟเวอร์" });
+  }
+};
+
