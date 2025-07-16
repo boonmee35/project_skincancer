@@ -2,21 +2,23 @@ import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { FaX, FaBars } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 function StickyNavbar() {
   const [openNav, setOpenNav] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const navigate = useNavigate();
 
-  const isLoggedIn = localStorage.getItem("token") !== null;
+  const { user, logout } = useAuth();
 
-  const userData = JSON.parse(localStorage.getItem("user"));
-  const fullname = userData?.fullname;
+  const isLoggedIn = !!user;
+  const fullname = user?.fullname;
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    logout();
     navigate("/");
+    toast.success("ออกจากระบบสำเร็จ");
   };
 
   return (
@@ -108,24 +110,75 @@ function StickyNavbar() {
             </>
           ) : (
             <div className="relative">
-              <span
-                onClick={() => setShowLogout(!showLogout)}
-                className="px-4 py-2 text-teal-900 font-semibold cursor-pointer"
-              >
-                สวัสดี, {fullname}
-              </span>
+  <div
+    onClick={() => setShowLogout(!showLogout)}
+    className="flex items-center gap-2 cursor-pointer"
+  >
+    <img
+      src="/avatar.png" 
+      alt="User avatar"
+      className="w-10 h-10 rounded-full object-cover"
+    />
+    <div className="flex flex-col text-left">
+      <span className="font-semibold text-teal-900">{fullname || "User"}</span>
+    </div>
+    <svg
+      className={`w-4 h-4 ml-1 transition-transform ${
+        showLogout ? "rotate-180" : ""
+      }`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
 
-              {showLogout && (
-                <div className="absolute right-0 mt-2 bg-white border rounded shadow-md z-10">
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
-                  >
-                    ออกจากระบบ
-                  </button>
-                </div>
-              )}
-            </div>
+  {showLogout && (
+    <div className="absolute right-0 mt-2 bg-white rounded-xl shadow-lg w-56 z-50 overflow-hidden">
+      <Link
+        to="/profile"
+        className="flex items-center px-4 py-3 hover:bg-gray-100 text-sm text-gray-800"
+      >
+        <svg
+          className="w-5 h-5 mr-2 text-gray-600"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M5.121 17.804A13.937 13.937 0 0112 15c2.212 0 4.29.536 6.121 1.49M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+        แก้ไขข้อมูล
+      </Link>
+
+      <button
+        onClick={handleLogout}
+        className="flex items-center w-full px-4 py-3 hover:bg-gray-100 text-sm text-red-600"
+      >
+        <svg
+          className="w-5 h-5 mr-2 text-red-500"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-9V5m-6 6h.01"
+          />
+        </svg>
+        ออกจากระบบ
+      </button>
+    </div>
+  )}
+</div>
           )}
         </div>
 

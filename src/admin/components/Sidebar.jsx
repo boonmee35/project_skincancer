@@ -8,8 +8,10 @@ import {
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
 import { AiFillHome } from 'react-icons/ai';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from "../../contexts/AuthContext";
 
 const Sidebar = ({ isSidebarOpen }) => {
+  const { logout } = useAuth();
 
   const linkClass = ({ isActive }) => `
     flex items-center gap-2 w-61 px-4 py-2 font-medium transition-all
@@ -21,9 +23,8 @@ const Sidebar = ({ isSidebarOpen }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate("/"); 
+    logout();
+    navigate("/");
   };
 
   return (

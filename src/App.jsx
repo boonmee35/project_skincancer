@@ -1,56 +1,90 @@
-import React from 'react'
-import { BrowserRouter, useRoutes } from 'react-router-dom'
-import Home from './pages/Home'
-import Articles from './pages/Articles'
-import ArticleDetail from './pages/ArticleDetail'
-import Analysis from './pages/Analysis'
-import ForumPage from './pages/ForumPage'
-import AnalysisHistory from './pages/AnalysisHistory'
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import AuthPage from './pages/AuthPage'
-import ForgotPass from './pages/ForgotPass'
+import Home from "./pages/Home";
+import Articles from "./pages/Articles";
+import ArticleDetail from "./pages/ArticleDetail";
+import Analysis from "./pages/Analysis";
+import ForumPage from "./pages/ForumPage";
+import AnalysisHistory from "./pages/AnalysisHistory";
 
-import HomeAd from './admin/pages/Home'
-import UsersAd from './admin/pages/Users'
-import ArticlesAd from './admin/pages/Articles'
-import Categories from './admin/pages/Categories'
-import Posts from './admin/pages/Posts'
+import AuthPage from "./pages/AuthPage";
+import ForgotPass from "./pages/ForgotPass";
 
+import AdminLayout from "./admin/AdminLayout";
+import HomeAd from "./admin/pages/Home";
+import UsersAd from "./admin/pages/Users";
+import ArticlesAd from "./admin/pages/Articles";
+import Categories from "./admin/pages/Categories";
+import Posts from "./admin/pages/Posts";
 
-const routes = [
-  { path: '/', element: <Home /> },
-  { path: '/articles', element: <Articles /> },
-  { path: '/article/:id', element: <ArticleDetail /> },
-  { path: '/analysis', element: <Analysis /> },
-  { path: '/forum', element: <ForumPage /> },
-  { path: '/history', element: <AnalysisHistory /> },
-  { path: '/login', element: <AuthPage /> },
-  { path: '/register', element: <AuthPage /> },
-  { path: '/forgot-password', element: <ForgotPass /> },
-  { path: '/admin', 
-    element: <HomeAd />,
-    children: [
-      { path: 'profile', element: <div>โปรไฟล์</div> },
-      { path: 'users', element: <UsersAd/> },
-      { path: 'posts', element: <Posts/> },
-      { path: 'articles', element: <ArticlesAd /> },
-      { path: 'categories', element: <Categories /> },
-    ]
-  },
-  { path: '*', element: <div>404 Not Found</div> }
-]
-
-function AppRoutes() {
-  const element = useRoutes(routes)
-  return element
-}
+import {
+  PrivateRoute,
+  PublicOnlyRoute,
+  AdminRoute,
+} from "./components/ProtectedRoute";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* ✅ Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/article/:id" element={<ArticleDetail />} />
+
+          {/* 🔒 Public-only (login/register) */}
+          <Route element={<PublicOnlyRoute />}>
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/register" element={<AuthPage />} />
+            <Route path="/forgot-password" element={<ForgotPass />} />
+          </Route>
+
+          {/* 🔒 Private User Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/analysis" element={<Analysis />} />
+            <Route path="/forum" element={<ForumPage />} />
+            <Route path="/history" element={<AnalysisHistory />} />
+          </Route>
+
+          {/* 🔒 Admin-only Routes */}
+          <Route path="/admin" element={<AdminRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<HomeAd />} />
+              <Route path="profile" element={<div>โปรไฟล์</div>} />
+              <Route path="users" element={<UsersAd />} />
+              <Route path="posts" element={<Posts />} />
+              <Route path="articles" element={<ArticlesAd />} />
+              <Route path="categories" element={<Categories />} />
+            </Route>
+          </Route>
+
+          {/* ❌ Not Found */}
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+
+        {/* Toast Notification */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+      
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

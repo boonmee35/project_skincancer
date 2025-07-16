@@ -1,8 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
-import { ToastContainer, toast, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import Pagination from "../components/Pagination";
 import CategoryModal from "../components/CategoryModal";
 
@@ -189,20 +188,6 @@ function Categories() {
         )}
       </div>
 
-      {/*Toast Notification */}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
     </div>
   );
 }
