@@ -16,7 +16,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         disabled={currentPage === 1}
         className="flex items-center px-3 py-1 border rounded text-sm bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        ← ก่อนหน้า
+      ก่อนหน้า
       </button>
 
       {[...Array(totalPages)].map((_, index) => {
@@ -41,7 +41,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         disabled={currentPage === totalPages}
         className="flex items-center px-3 py-1 border rounded text-sm bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        ถัดไป →
+      ถัดไป
       </button>
     </div>
   );
