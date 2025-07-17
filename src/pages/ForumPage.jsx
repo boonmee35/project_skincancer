@@ -12,6 +12,10 @@ const ForumPage = () => {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
 
+  const { user } = useAuth();
+  const fullname = user?.fullname;
+  const avatar = user?.avatar;
+
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const fetchPosts = async () => {
@@ -23,6 +27,7 @@ const ForumPage = () => {
       console.log("ไม่สามารถโหลดโพสต์ได้");
     }
   };
+
 
   useEffect(() => {
     fetchPosts();
@@ -147,12 +152,12 @@ const ForumPage = () => {
         <aside className="w-full lg:w-1/5 bg-white rounded-xl p-6 shadow-lg self-start">
           <div className="flex flex-col items-center gap-3 mb-6">
             <img
-              src="https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg"
+              src={avatar}
               className="rounded-full w-24 h-24 border-4 border-teal-400 object-cover"
               alt="User"
             />
             <div className="text-center">
-              <div className="font-bold text-xl text-gray-900">User</div>
+              <div className="font-bold text-xl text-gray-900">{fullname}</div>
             </div>
           </div>
           <button className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-lg w-full mb-6 shadow-md hover:shadow-lg transition-all duration-300">
@@ -160,7 +165,7 @@ const ForumPage = () => {
           </button>
           <div className="text-sm text-gray-700 space-y-2">
             <h3 className="font-semibold text-base text-gray-800 mb-2">
-              กฎของฟอรั่ม:
+              กฎของชุมชน:
             </h3>
             <p className="flex items-center gap-2">
               <span className="text-green-600 text-lg">✔</span>{" "}

@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { FaEnvelope, FaLock  } from "react-icons/fa6";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -53,23 +54,29 @@ function LoginForm() {
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="block text-sm text-gray-600 mb-1">อีเมล</label>
-          <input
-            type="email"
-            placeholder="กรอกอีเมล"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
+          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-teal-500">
+            <FaEnvelope className="text-gray-400 mr-2" />
+            <input
+              type="email"
+              placeholder="กรอกอีเมล"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full focus:outline-none"
+            />
+          </div>
         </div>
         <div className="mb-4">
           <label className="block text-sm text-gray-600 mb-1">รหัสผ่าน</label>
-          <input
+          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-teal-500">
+            <FaLock className="text-gray-400 mr-2" />
+            <input
             type="password"
             placeholder="กรอกรหัสผ่าน"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full focus:outline-none"
           />
+          </div>
         </div>
         <button
           type="submit"
@@ -81,6 +88,7 @@ function LoginForm() {
         <div className="text-center mt-2">
           <Link
             to="/forgot-password"
+            state={{ email }}
             className="text-sm text-teal-700 cursor-pointer hover:underline"
           >
             ลืมรหัสผ่าน ?

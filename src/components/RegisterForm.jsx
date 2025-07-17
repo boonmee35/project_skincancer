@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast, Bounce } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+import { FaEnvelope, FaLock, FaUser } from "react-icons/fa6";
 
 function RegisterForm() {
   const [formData, setFormData] = useState({
@@ -22,11 +22,18 @@ function RegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const maleImage =
+      "https://th.bing.com/th/id/OIG3.Tqppk2m07aAJKCGCEy9j?pid=ImgGn";
+    const femaleImage =
+      "https://th.bing.com/th/id/OIG1.SnKHoowaI_EmJElcwbLW?pid=ImgGn";
+
+    const payload = {
+      ...formData,
+      avatar: formData.sex === "M" ? maleImage : femaleImage,
+    };
+
     try {
-      const response = await axios.post(
-        apiUrl + "register",
-        formData
-      );
+      const response = await axios.post(apiUrl + "register", payload);
 
       if (response.data.message) {
         toast.success("ลงทะเบียนสำเร็จ");
@@ -58,14 +65,17 @@ function RegisterForm() {
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="block text-sm text-gray-600 mb-1">ชื่อผู้ใช้</label>
-          <input
-            type="text"
-            name="fullname"
-            value={formData.fullname}
-            onChange={handleChange}
-            placeholder="กรอกชื่อผู้ใช้"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
+          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <FaUser className="text-gray-400 mr-2" />
+            <input
+              type="text"
+              name="fullname"
+              value={formData.fullname}
+              onChange={handleChange}
+              placeholder="กรอกชื่อผู้ใช้"
+              className="w-full focus:outline-none"
+            />
+          </div>
         </div>
         <div className="mb-3">
           <label className="block text-sm text-gray-600 mb-1">
@@ -108,25 +118,31 @@ function RegisterForm() {
         </div>
         <div className="mb-3">
           <label className="block text-sm text-gray-600 mb-1">อีเมล</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="กรอกอีเมล"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
+          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <FaEnvelope className="text-gray-400 mr-2" />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="กรอกอีเมล"
+              className="w-full focus:outline-none"
+            />
+          </div>
         </div>
         <div className="mb-4">
           <label className="block text-sm text-gray-600 mb-1">รหัสผ่าน</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="กรอกรหัสผ่าน"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
+          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <FaLock className="text-gray-400 mr-2" />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="กรอกรหัสผ่าน"
+              className="w-full focus:outline-none"
+            />
+          </div>
         </div>
         <button
           type="submit"
@@ -135,21 +151,6 @@ function RegisterForm() {
           ลงทะเบียน
         </button>
       </form>
-
-      {/* Toast Notification */}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Bounce}
-      />
     </>
   );
 }

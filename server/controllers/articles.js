@@ -51,6 +51,40 @@ exports.getArticleMostViewed = async (req, res) => {
     }
 };
 
+exports.getRelatedArticles = async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ error: 'Article ID is required' });
+    }
+
+    try {
+        // 1. ดึง category_id ของบทความที่ระบุ
+        const getCategorySql = 'SELECT category_id FROM articles WHERE article_id = ?';
+        const [categoryResults] = await connection.promise().query(getCategorySql, [id]);
+
+        if (categoryResults.length === 0) {
+            return res.status(404).json({ error: 'Article not found' });
+        }
+
+        const categoryId = categoryResults[0].category_id;
+
+        // 2. ดึงบทความอื่น ๆ ที่มี category_id เดียวกัน ยกเว้นตัวเอง และจำกัด 3 รายการ
+        const relatedSql = `
+            SELECT article_id, title, image_url, created_at, view_count 
+            FROM articles 
+            WHERE category_id = ? AND article_id != ? 
+            LIMIT 3
+        `;
+        const [relatedResults] = await connection.promise().query(relatedSql, [categoryId, id]);
+
+        res.json(relatedResults);
+    } catch (error) {
+        console.error('Error fetching related articles:', error);
+        return res.status(500).json({ error: 'Database query failed' });
+    }
+};
+
 exports.postArticle = async (req, res) => {
   const { title, content, source, category_id } = req.body;
   const image_url = req.file ? `${url}uploads/articles/${req.file.filename}` : null;

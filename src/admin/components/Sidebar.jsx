@@ -1,11 +1,12 @@
 import React from "react";
 import {
-  FaBars,
+  FaRectangleList,
   FaPen,
   FaBook,
-  FaUser,
+  FaUserGroup,
+  FaFileLines
 } from "react-icons/fa6";
-import { FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import { AiFillHome } from 'react-icons/ai';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from "../../contexts/AuthContext";
@@ -51,13 +52,13 @@ const Sidebar = ({ isSidebarOpen }) => {
           </li>
           <li>
             <NavLink to="/admin/categories" className={linkClass}>
-              <FaCog className="text-lg" />
+              <FaRectangleList className="text-lg" />
               <span>จัดการหมวดหมู่บทความ</span>
             </NavLink>
           </li>
           <li>
             <NavLink to="/admin/users" className={linkClass}>
-              <FaBook className="text-lg" />
+              <FaUserGroup  className="text-lg" />
               <span>จัดการผู้ใช้</span>
             </NavLink>
           </li>
@@ -69,7 +70,7 @@ const Sidebar = ({ isSidebarOpen }) => {
           </li>
           <li>
             <NavLink to="/admin/analysis" className={linkClass}>
-              <FaPen className="text-lg" />
+              <FaFileLines className="text-lg" />
               <span>รายงานการวิเคราะห์</span>
             </NavLink>
           </li>

@@ -11,7 +11,7 @@ function AuthPage() {
     <>
       <nav className="sticky top-0 z-10 bg-white shadow-md w-full px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between">
-            <Link to="/" className="text-lg font-medium text-teal-900">
+            <Link to="/" className="text-lg font-bold text-teal-900">
                 <img
                 src="/logo.png"
                 alt="Logo"

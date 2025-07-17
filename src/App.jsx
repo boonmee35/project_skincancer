@@ -35,7 +35,7 @@ function App() {
           {/* ✅ Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/articles" element={<Articles />} />
-          <Route path="/article/:id" element={<ArticleDetail />} />
+          <Route path="/articles/:id" element={<ArticleDetail />} />
 
           {/* 🔒 Public-only (login/register) */}
           <Route element={<PublicOnlyRoute />}>
