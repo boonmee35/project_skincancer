@@ -128,7 +128,7 @@ function Articles() {
                   </div>
                 </div>
                 <Link
-                  to={`/article/${article.article_id}`}
+                  to={`/articles/${article.article_id}`}
                   onClick={() => handleViewClick(article.article_id)}
                 >
                   <button className="bg-teal-600 hover:bg-teal-700 text-white py-1.5 px-4 rounded-md">

@@ -6,9 +6,11 @@ const url = process.env.URL;
 exports.getPosts = async (req, res) => {
     try {
         const sql = `
-            SELECT p.*, u.*
+            SELECT p.*, u.*, count(c.comment_id) as comment_count
             FROM posts p
             LEFT JOIN users u ON p.user_id = u.user_id
+            LEFT JOIN comments c ON p.post_id = c.post_id
+            GROUP BY p.post_id
             ORDER BY p.created_at DESC
         `;
         const [results] = await connection.promise().query(sql);

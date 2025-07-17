@@ -6,7 +6,7 @@ require('dotenv').config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.register = async (req, res) => {
-    const { fullname, birthdate, sex, email, password } = req.body;
+    const { fullname, birthdate, sex, avatar, email, password } = req.body;
 
     if (!fullname || !email || !password) {
         return res.status(400).json({ error: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
@@ -20,9 +20,9 @@ exports.register = async (req, res) => {
             return res.json({ error: 'อีเมลนี้มีผู้ใช้แล้ว' });
         }
 
-        const insertUserQuery = 'INSERT INTO users (fullname, birthdate, sex, email, password) VALUES (?, ?, ?, ?, ?)';
+        const insertUserQuery = 'INSERT INTO users (fullname, birthdate, sex, email, password, avatar) VALUES (?, ?, ?, ?, ?, ?)';
         const hashedPassword = await bcrypt.hash(password, 10);
-        await connection.promise().query(insertUserQuery, [fullname, birthdate, sex, email, hashedPassword]);
+        await connection.promise().query(insertUserQuery, [fullname, birthdate, sex, email, hashedPassword, avatar]);
         return res.status(201).json({ message: 'ลงทะเบียนสำเร็จ' });
 
     }catch (error) {
@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
         expiresIn: '7d',
       });
       
-      res.json({ message: 'เข้าสู่ระบบสำเร็จ', token, user: { id: user.user_id, fullname: user.fullname, role: user.role } });
+      res.json({ message: 'เข้าสู่ระบบสำเร็จ', token, user: { id: user.user_id, fullname: user.fullname, avatar: user.avatar, role: user.role } });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Login failed' });

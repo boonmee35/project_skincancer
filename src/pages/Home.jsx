@@ -40,7 +40,7 @@ function Home() {
   return (
     <div>
       <StickyNavbar />
-      <div className="bg-[#E6FAFB] text-gray-800 font-sans">
+      <div className="bg-[#E6FAFB] text-gray-800">
         {/* Header */}
         <section className="text-center py-12 px-4">
           <h1 className="text-4xl font-bold text-gray-900">ปกป้องผิวของคุณ</h1>
@@ -55,7 +55,7 @@ function Home() {
 
         {/* Cancer Info */}
         <section className="py-10 px-4 max-w-6xl mx-auto">
-          <h3 className="text-xl font-semibold text-center mb-6">
+          <h3 className="text-xl text-center mb-6">
             ข้อมูลเกี่ยวกับมะเร็งผิวหนัง
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -1,12 +1,13 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEnvelope, FaLock, FaCheckCircle, FaSpinner } from "react-icons/fa";
 
 function ForgotPass() {
   const [step, setStep] = useState(1);
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+  const [email, setEmail] = useState(location.state?.email || "");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -54,11 +55,17 @@ function ForgotPass() {
   return (
     <>
       {/* Navbar */}
-      <nav className="sticky top-0 z-10 bg-white shadow-md w-full px-4 py-3 flex items-center">
-        <Link to="/" className="text-xl font-semibold text-teal-900 flex items-center">
-          <img src="/logo.png" alt="Logo" className="h-8 w-8 mr-2" />
-          SkinCancerTrend
-        </Link>
+      <nav className="sticky top-0 z-10 bg-white shadow-md w-full px-4 py-2 lg:px-8 lg:py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-lg font-bold text-teal-900">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-8 w-8 inline-block mr-2"
+            />
+            SkinCancerTrend
+          </Link>
+        </div>
       </nav>
 
       {/* Main */}
@@ -70,9 +77,27 @@ function ForgotPass() {
 
           {/* Progress */}
           <div className="flex justify-between mb-6 text-sm font-medium">
-            <div className={`flex-1 text-center ${step >= 1 ? "text-yellow-500" : "text-gray-400"}`}>กรอกอีเมล</div>
-            <div className={`flex-1 text-center ${step >= 2 ? "text-yellow-500" : "text-gray-400"}`}>ตั้งรหัสใหม่</div>
-            <div className={`flex-1 text-center ${step >= 3 ? "text-yellow-500" : "text-gray-400"}`}>สำเร็จ</div>
+            <div
+              className={`flex-1 text-center ${
+                step >= 1 ? "text-yellow-500" : "text-gray-400"
+              }`}
+            >
+              กรอกอีเมล
+            </div>
+            <div
+              className={`flex-1 text-center ${
+                step >= 2 ? "text-yellow-500" : "text-gray-400"
+              }`}
+            >
+              ตั้งรหัสใหม่
+            </div>
+            <div
+              className={`flex-1 text-center ${
+                step >= 3 ? "text-yellow-500" : "text-gray-400"
+              }`}
+            >
+              สำเร็จ
+            </div>
           </div>
 
           {/* Step 1 */}
@@ -97,7 +122,11 @@ function ForgotPass() {
                 disabled={loading}
                 className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-md transition flex items-center justify-center"
               >
-                {loading ? <FaSpinner className="animate-spin mr-2" /> : "ยืนยัน"}
+                {loading ? (
+                  <FaSpinner className="animate-spin mr-2" />
+                ) : (
+                  "ยืนยัน"
+                )}
               </button>
             </form>
           )}
@@ -124,7 +153,11 @@ function ForgotPass() {
                 disabled={loading}
                 className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 rounded-md flex items-center justify-center"
               >
-                {loading ? <FaSpinner className="animate-spin mr-2" /> : "รีเซ็ตรหัสผ่าน"}
+                {loading ? (
+                  <FaSpinner className="animate-spin mr-2" />
+                ) : (
+                  "รีเซ็ตรหัสผ่าน"
+                )}
               </button>
             </form>
           )}
@@ -136,7 +169,9 @@ function ForgotPass() {
               <h3 className="text-xl font-semibold text-teal-800 mb-2">
                 รีเซ็ตรหัสผ่านเรียบร้อยแล้ว
               </h3>
-              <p className="text-gray-600 mb-4">คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้ทันที</p>
+              <p className="text-gray-600 mb-4">
+                คุณสามารถเข้าสู่ระบบด้วยรหัสผ่านใหม่ได้ทันที
+              </p>
               <Link
                 to="/login"
                 className="inline-block bg-teal-500 text-white px-6 py-2 rounded-md hover:bg-teal-600 transition"

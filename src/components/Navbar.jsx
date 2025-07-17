@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
-import { FaX, FaBars } from "react-icons/fa6";
+import { FaX, FaBars, FaUser } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
+import { FaSignOutAlt } from "react-icons/fa";
 
 function StickyNavbar() {
   const [openNav, setOpenNav] = useState(false);
@@ -14,6 +15,7 @@ function StickyNavbar() {
 
   const isLoggedIn = !!user;
   const fullname = user?.fullname;
+  const avatar = user?.avatar;
 
   const handleLogout = () => {
     logout();
@@ -24,7 +26,7 @@ function StickyNavbar() {
   return (
     <nav className="sticky top-0 z-10 bg-white shadow-md w-full px-4 py-2 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between">
-        <Link to="/" className="text-lg font-medium text-teal-900">
+        <Link to="/" className="text-lg font-bold text-teal-900">
           <img
             src="/logo.png"
             alt="Logo"
@@ -110,75 +112,57 @@ function StickyNavbar() {
             </>
           ) : (
             <div className="relative">
-  <div
-    onClick={() => setShowLogout(!showLogout)}
-    className="flex items-center gap-2 cursor-pointer"
-  >
-    <img
-      src="/avatar.png" 
-      alt="User avatar"
-      className="w-10 h-10 rounded-full object-cover"
-    />
-    <div className="flex flex-col text-left">
-      <span className="font-semibold text-teal-900">{fullname || "User"}</span>
-    </div>
-    <svg
-      className={`w-4 h-4 ml-1 transition-transform ${
-        showLogout ? "rotate-180" : ""
-      }`}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-    </svg>
-  </div>
+              <div
+                onClick={() => setShowLogout(!showLogout)}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <img
+                  src={avatar}
+                  alt="User avatar"
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div className="flex flex-col text-left">
+                  <span className="font-semibold text-teal-900">
+                    {fullname}
+                  </span>
+                </div>
+                <svg
+                  className={`w-4 h-4 ml-1 transition-transform ${
+                    showLogout ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
 
-  {showLogout && (
-    <div className="absolute right-0 mt-2 bg-white rounded-xl shadow-lg w-56 z-50 overflow-hidden">
-      <Link
-        to="/profile"
-        className="flex items-center px-4 py-3 hover:bg-gray-100 text-sm text-gray-800"
-      >
-        <svg
-          className="w-5 h-5 mr-2 text-gray-600"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5.121 17.804A13.937 13.937 0 0112 15c2.212 0 4.29.536 6.121 1.49M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
-        แก้ไขข้อมูล
-      </Link>
+              {showLogout && (
+                <div className="absolute right-0 mt-2 bg-white rounded-xl shadow-lg w-56 z-50 overflow-hidden">
+                  <Link
+                    to="/profile"
+                    className="flex items-center px-4 py-3 hover:bg-gray-100 text-sm text-gray-800"
+                  >
+                    <FaUser className="w-5 h-5 mr-2 text-gray-600" />
+                    แก้ไขข้อมูล
+                  </Link>
 
-      <button
-        onClick={handleLogout}
-        className="flex items-center w-full px-4 py-3 hover:bg-gray-100 text-sm text-red-600"
-      >
-        <svg
-          className="w-5 h-5 mr-2 text-red-500"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-9V5m-6 6h.01"
-          />
-        </svg>
-        ออกจากระบบ
-      </button>
-    </div>
-  )}
-</div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-4 py-3 hover:bg-gray-100 text-sm text-red-600"
+                  >
+                    <FaSignOutAlt className="w-5 h-5 mr-2 text-red-500" />
+                    ออกจากระบบ
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
 

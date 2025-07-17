@@ -14,6 +14,24 @@ exports.getUsers = async (req, res) => {
     }
 };
 
+exports.getUserById = async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
+    try {
+        const sql = 'SELECT * FROM users WHERE user_id = ?';
+        const [results] = await connection.promise().query(sql, [id]);
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json(results[0]);
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        return res.status(500).json({ error: 'Database query failed' });
+    }
+};
+
 exports.updateUser = async (req, res) => {
     const { id } = req.params;
     const { fullname, email, role } = req.body;
