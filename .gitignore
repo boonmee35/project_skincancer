@@ -16,6 +16,9 @@ dist-ssr
 /server/uploads/**
 /server/.env
 
+/ai_model/data
+venv/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,3 +29,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.h5
