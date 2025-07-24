@@ -17,7 +17,9 @@ dist-ssr
 /server/.env
 
 /ai_model/data
+ai_model/venv/
 venv/
+**/venv/
 
 # Editor directories and files
 .vscode/*
