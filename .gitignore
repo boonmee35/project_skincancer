@@ -17,9 +17,10 @@ dist-ssr
 /server/.env
 
 /ai_model/dataset/**
-ai_model/venv/
+ai_model/venv/**
 venv/
 **/venv/
+/skincancer.sql
 
 
 # Editor directories and files
