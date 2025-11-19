@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 import { FaSignOutAlt } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 function StickyNavbar() {
   const [openNav, setOpenNav] = useState(false);
@@ -20,7 +21,12 @@ function StickyNavbar() {
   const handleLogout = () => {
     logout();
     navigate("/");
-    toast.success("ออกจากระบบสำเร็จ");
+    Swal.fire({
+      icon: "success",
+      title: "ออกจากระบบสำเร็จ",
+      showConfirmButton: false,
+      timer: 1500
+    });
   };
 
   return (
@@ -32,7 +38,7 @@ function StickyNavbar() {
             alt="Logo"
             className="h-8 w-8 inline-block mr-2"
           />
-          SkinCancerTrend
+          SkinCancerAnalyze
         </Link>
 
         <div className="hidden lg:flex gap-6">
@@ -56,10 +62,7 @@ function StickyNavbar() {
           >
             บทความ
           </NavLink>
-
-          {isLoggedIn && (
-            <>
-              <NavLink
+          <NavLink
                 to="/analysis"
                 className={({ isActive }) =>
                   isActive
@@ -69,6 +72,10 @@ function StickyNavbar() {
               >
                 วิเคราะห์รูปภาพ
               </NavLink>
+
+          {isLoggedIn && (
+            <>
+              
               <NavLink
                 to="/forum"
                 className={({ isActive }) =>
@@ -93,7 +100,7 @@ function StickyNavbar() {
           )}
         </div>
 
-        {/* ✅ ปุ่มขวาบน */}
+        {/* ปุ่มขวาบน */}
         <div className="hidden lg:flex gap-4 relative">
           {!isLoggedIn ? (
             <>
@@ -150,12 +157,12 @@ function StickyNavbar() {
                     className="flex items-center px-4 py-3 hover:bg-gray-100 text-sm text-gray-800"
                   >
                     <FaUser className="w-5 h-5 mr-2 text-gray-600" />
-                    แก้ไขข้อมูล
+                    ข้อมูลส่วนตัว
                   </Link>
 
                   <button
                     onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-3 hover:bg-gray-100 text-sm text-red-600"
+                    className="flex items-center w-full px-4 py-3 hover:bg-gray-100 text-sm text-red-600 cursor-pointer"
                   >
                     <FaSignOutAlt className="w-5 h-5 mr-2 text-red-500" />
                     ออกจากระบบ
@@ -198,10 +205,7 @@ function StickyNavbar() {
           >
             บทความ
           </NavLink>
-
-          {isLoggedIn && (
-            <>
-              <NavLink
+          <NavLink
                 to="/analysis"
                 className={({ isActive }) =>
                   `text-center pb-2 font-medium ${
@@ -213,6 +217,10 @@ function StickyNavbar() {
               >
                 วิเคราะห์รูปภาพ
               </NavLink>
+
+          {isLoggedIn && (
+            <>
+              
               <NavLink
                 to="/forum"
                 className={({ isActive }) =>
@@ -256,9 +264,23 @@ function StickyNavbar() {
               </Link>
             </>
           ) : (
-            <span className="text-center mt-2 px-4 py-2 text-teal-900 font-semibold">
-              สวัสดี, {fullname}
-            </span>
+            <>
+                  <Link
+                    to="/profile"
+                    className="flex justify-center items-center px-4 py-3 hover:bg-gray-100 text-sm text-gray-800"
+                  >
+                    <FaUser className="w-5 h-5 mr-2 text-gray-600" />
+                    ข้อมูลส่วนตัว
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="flex justify-center items-center w-full px-4 py-3 hover:bg-gray-100 text-sm text-red-600"
+                  >
+                    <FaSignOutAlt className="w-5 h-5 mr-2 text-red-500" />
+                    ออกจากระบบ
+                  </button>
+            </>
           )}
         </div>
       )}

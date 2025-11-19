@@ -43,8 +43,23 @@ const postStorage = multer.diskStorage({
 
 const postUpload = multer({ storage: postStorage });
 
+// สำหรับการบันทึกผลการวิเคราะห์
+const analysisStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/analysis/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
+  },
+});
+
+const analysisUpload = multer({ storage: analysisStorage });
+
 module.exports = {
   articleUpload,
   profileUpload,
   postUpload,
+  analysisUpload,
 };

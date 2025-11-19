@@ -7,8 +7,11 @@ import Home from "./pages/Home";
 import Articles from "./pages/Articles";
 import ArticleDetail from "./pages/ArticleDetail";
 import Analysis from "./pages/Analysis";
+import DiagnosisResult from "./pages/DiagnosisResult";
 import ForumPage from "./pages/ForumPage";
 import AnalysisHistory from "./pages/AnalysisHistory";
+import AnalysisHistoryDetail from "./pages/AnalysisHistoryDetail";
+import Profile from "./pages/Profile";
 
 import AuthPage from "./pages/AuthPage";
 import ForgotPass from "./pages/ForgotPass";
@@ -19,6 +22,8 @@ import UsersAd from "./admin/pages/Users";
 import ArticlesAd from "./admin/pages/Articles";
 import Categories from "./admin/pages/Categories";
 import Posts from "./admin/pages/Posts";
+import Comments from "./admin/pages/Comments";
+import AnalysisAd from "./admin/pages/Analysis";
 
 import {
   PrivateRoute,
@@ -36,6 +41,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/articles" element={<Articles />} />
           <Route path="/articles/:id" element={<ArticleDetail />} />
+          <Route path="/analysis" element={<Analysis />} />
+          <Route path="/result" element={<DiagnosisResult />} />
 
           {/* 🔒 Public-only (login/register) */}
           <Route element={<PublicOnlyRoute />}>
@@ -46,20 +53,22 @@ function App() {
 
           {/* 🔒 Private User Routes */}
           <Route element={<PrivateRoute />}>
-            <Route path="/analysis" element={<Analysis />} />
             <Route path="/forum" element={<ForumPage />} />
             <Route path="/history" element={<AnalysisHistory />} />
+            <Route path="/history/result" element={<AnalysisHistoryDetail />} />
+            <Route path="/profile" element={<Profile/>} />
           </Route>
 
           {/* 🔒 Admin-only Routes */}
           <Route path="/admin" element={<AdminRoute />}>
             <Route element={<AdminLayout />}>
               <Route index element={<HomeAd />} />
-              <Route path="profile" element={<div>โปรไฟล์</div>} />
               <Route path="users" element={<UsersAd />} />
               <Route path="posts" element={<Posts />} />
+              <Route path="comments" element={<Comments />} />
               <Route path="articles" element={<ArticlesAd />} />
               <Route path="categories" element={<Categories />} />
+              <Route path="analysis" element={<AnalysisAd />} />
             </Route>
           </Route>
 

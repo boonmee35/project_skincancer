@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FaEnvelope, FaLock, FaUser } from "react-icons/fa6";
+import { FaEnvelope, FaLock, FaUser, FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import Swal from "sweetalert2";
+import { useAuth } from "../contexts/AuthContext";
 
 function RegisterForm() {
+  const { redirectInfo } = useAuth();
   const [formData, setFormData] = useState({
     fullname: "",
     birthdate: "",
     sex: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const handleChange = (e) => {
@@ -17,10 +21,22 @@ function RegisterForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      Swal.fire({
+        icon: "warning",
+        title: "รหัสผ่านไม่ตรงกัน",
+        text: "กรุณากรอกรหัสผ่านให้ตรงกัน",
+      });
+      return;
+    }
 
     const maleImage =
       "https://th.bing.com/th/id/OIG3.Tqppk2m07aAJKCGCEy9j?pid=ImgGn";
@@ -36,26 +52,47 @@ function RegisterForm() {
       const response = await axios.post(apiUrl + "register", payload);
 
       if (response.data.message) {
-        toast.success("ลงทะเบียนสำเร็จ");
+
+        Swal.fire({
+          icon: "success",
+          title: "ลงทะเบียนสำเร็จ",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        
         setFormData({
           fullname: "",
           birthdate: "",
           sex: "",
           email: "",
           password: "",
+          confirmPassword: "",
         });
       } else {
-        toast.error(response.data.error || "เกิดข้อผิดพลาดในการลงทะเบียน");
+        Swal.fire({
+          icon: "error",
+          title: "ลงทะเบียนล้มเหลว",
+          text: response.data.error || "เกิดข้อผิดพลาดในการลงทะเบียน",
+        });
+
       }
     } catch (error) {
       if (error.response) {
         console.log("API Error:", error.response.data);
-        toast.error(
-          `ลงทะเบียนล้มเหลว: ${error.response.data.error || "เกิดข้อผิดพลาด"}`
-        );
+        Swal.fire({
+          icon: "error",
+          title: "ลงทะเบียนล้มเหลว",
+          text: error.response.data.error || "เกิดข้อผิดพลาดในการลงทะเบียน",
+        });
+
       } else {
         console.log("Server not responding");
-        toast.error("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+        Swal.fire({
+          icon: "error",
+          title: "ลงทะเบียนล้มเหลว",
+          text: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้",
+        });
+
       }
     }
   };
@@ -135,13 +172,43 @@ function RegisterForm() {
           <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
             <FaLock className="text-gray-400 mr-2" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="กรอกรหัสผ่าน"
               className="w-full focus:outline-none"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="ml-2 text-sm text-teal-600"
+            >
+              {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+            </button>
+          </div>
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm text-gray-600 mb-1">
+            ยืนยันรหัสผ่าน
+          </label>
+          <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-teal-500">
+            <FaLock className="text-gray-400 mr-2" />
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="กรอกรหัสผ่านอีกครั้ง"
+              className="w-full focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+              className="ml-2 text-sm text-teal-600"
+            >
+              {showConfirmPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+            </button>
           </div>
         </div>
         <button

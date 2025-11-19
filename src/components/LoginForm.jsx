@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { FaEnvelope, FaLock  } from "react-icons/fa6";
+import { FaEnvelope, FaLock, FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, redirectInfo } = useAuth();
+  const location = useLocation();
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -23,25 +26,47 @@ function LoginForm() {
       });
 
       if (response.data) {
-  login(response.data.token, response.data.user);
-  toast.success("เข้าสู่ระบบสำเร็จ");
+        login(response.data.token, response.data.user);
+        Swal.fire({
+          icon: "success",
+          title: "เข้าสู่ระบบสำเร็จ",
+          showConfirmButton: false,
+          timer: 1500
+        });
 
-  setTimeout(() => {
-    if (response.data.user.role === "user") {
-      navigate("/");
-    } else {
-      navigate("/admin");
-    }
-  }, 1500);
+        setTimeout(() => {
+          // // ถ้ามี state จากหน้าที่มาก่อนหน้า → กลับไปหน้านั้นพร้อม state เดิม
+          // if (location.state?.from && location.state?.diagnosisState) {
+          //   navigate(location.state.from, { state: location.state.diagnosisState });
+          // } else {
+          //   // ถ้าไม่มี state → ไปหน้า default ตาม role
+          //   if (response.data.user.role === "user") {
+          //     navigate("/");
+          //   } else {
+          //     navigate("/admin");
+          //   }
+          // }
+          if (redirectInfo?.from) {
+            navigate(redirectInfo.from, { state: redirectInfo.diagnosisState });
+          } else {
+            navigate(response.data.user.role === "user" ? "/" : "/admin");
+          }
+        }, 1500);
       } else {
-        toast.error(`เข้าสู่ระบบล้มเหลว: ${response.data.error}`);
+        Swal.fire({
+          icon: "error",
+          title: "เข้าสู่ระบบล้มเหลว",
+          text: response.data.error,
+        });
       }
     } catch (error) {
       if (error.response) {
         console.log("API Error:", error.response.data);
-        toast.error(
-          `เข้าสู่ระบบล้มเหลว: ${error.response.data.error || "เกิดข้อผิดพลาด"}`
-        );
+        Swal.fire({
+          icon: "error",
+          title: "ไม่สามารถเข้าสู่ระบบได้",
+          text: `${error.response.data.error} เนื่องจาก: ${error.response.data.reason}` || "เกิดข้อผิดพลาด",
+        });
       } else {
         console.log("Server not responding");
         toast.error("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
@@ -70,12 +95,19 @@ function LoginForm() {
           <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-teal-500">
             <FaLock className="text-gray-400 mr-2" />
             <input
-            type="password"
-            placeholder="กรอกรหัสผ่าน"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full focus:outline-none"
-          />
+              type={showPassword ? "text" : "password"}
+              placeholder="กรอกรหัสผ่าน"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full focus:outline-none"
+            />
+            <button
+                          type="button"
+                          onClick={() => setShowPassword((prev) => !prev)}
+                          className="ml-2 text-sm text-teal-600"
+                        >
+                          {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                        </button>
           </div>
         </div>
         <button
@@ -95,7 +127,6 @@ function LoginForm() {
           </Link>
         </div>
       </form>
-
     </>
   );
 }

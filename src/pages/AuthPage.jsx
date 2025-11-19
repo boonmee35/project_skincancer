@@ -17,7 +17,7 @@ function AuthPage() {
                 alt="Logo"
                 className="h-8 w-8 inline-block mr-2"
                 />
-                SkinCancerTrend
+                SkinCancerAnalyze
             </Link>
         </div>
       </nav>

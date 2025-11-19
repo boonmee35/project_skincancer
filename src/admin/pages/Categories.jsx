@@ -4,6 +4,7 @@ import { FaSearch, FaEye, FaTrashAlt, FaEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
 import Pagination from "../components/Pagination";
 import CategoryModal from "../components/CategoryModal";
+import Swal from "sweetalert2";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
@@ -48,15 +49,27 @@ function Categories() {
   };
 
   const handleDeleteCategory = async (id) => {
-    if (!window.confirm("คุณแน่ใจว่าต้องการลบหมวดหมู่นี้?")) return;
-    try {
-      await axios.delete(`${apiUrl}categories/delete/${id}`);
-      toast.success("ลบหมวดหมู่เรียบร้อยแล้ว");
-      fetchCategories();
-    } catch (error) {
-      toast.error("เกิดข้อผิดพลาดในการลบหมวดหมู่");
-      console.error("Error deleting category:", error);
-    }
+    Swal.fire({
+      title: "คุณแน่ใจหรือไม่?",
+      text: "คุณต้องการลบหมวดหมู่นี้จริงๆ หรือไม่",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "ลบเลย",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`${apiUrl}categories/delete/${id}`);
+          Swal.fire("ลบสำเร็จ!", "หมวดหมู่ถูกลบเรียบร้อยแล้ว", "success");
+          fetchCategories();
+        } catch (error) {
+          console.error("Error deleting category:", error);
+          Swal.fire("ผิดพลาด!", "ไม่สามารถลบหมวดหมู่ได้", "error");
+        }
+      }
+    });
   };
 
   const openAddModal = () => {
@@ -74,10 +87,17 @@ function Categories() {
   const handleSubmitModal = async ({ name }) => {
     try {
       if (modalMode === "add") {
-        await axios.post(apiUrl + "categories/insert", {
+        await axios.post(apiUrl + "categories/add", {
           name,
         });
-        toast.success("เพิ่มหมวดหมู่เรียบร้อยแล้ว");
+        Swal.fire({
+          icon: "success",
+          title: "เพิ่มหมวดหมู่เรียบร้อยแล้ว",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        //
+        // toast.success("เพิ่มหมวดหมู่เรียบร้อยแล้ว");
       } else {
         await axios.put(
           `${apiUrl}categories/update/${selectedCategory.category_id}`,
@@ -85,7 +105,14 @@ function Categories() {
             name,
           }
         );
-        toast.success("แก้ไขหมวดหมู่เรียบร้อยแล้ว");
+        Swal.fire({
+          icon: "success",
+          title: "แก้ไขหมวดหมู่เรียบร้อยแล้ว",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        //
+        // toast.success("แก้ไขหมวดหมู่เรียบร้อยแล้ว");
       }
       setShowModal(false);
       fetchCategories();
@@ -110,7 +137,7 @@ function Categories() {
               placeholder="ค้นหาด้วยชื่อหมวดหมู่..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border rounded-md pl-10 p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full border rounded-md pl-10 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
             <FaSearch className="absolute top-3 left-3 text-gray-500" />
           </div>
@@ -124,7 +151,7 @@ function Categories() {
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border-collapse">
+          <table className="min-w-full table-auto border-b">
             <thead className="bg-blue-50 text-gray-700">
               <tr>
                 <th className="p-3 text-left">#</th>

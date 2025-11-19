@@ -5,6 +5,14 @@ require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+function getAvatarUrl(avatarPath) {
+    if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')){
+        return avatarPath;
+    } else if (avatarPath.startsWith('/uploads/')) {
+        return `${process.env.URL}${avatarPath}`;
+    }
+};
+
 exports.register = async (req, res) => {
     const { fullname, birthdate, sex, avatar, email, password } = req.body;
 
@@ -42,6 +50,13 @@ exports.login = async (req, res) => {
       const user = users[0];
       
       if (!user) return res.status(404).json({ error: 'ไม่เจอผู้ใช้' });
+
+      if (user.is_active === "ถูกระงับ") {
+        return res.status(403).json({
+          error: "บัญชีนี้ถูกระงับการใช้งาน",
+          reason: user.reason || "ไม่มีเหตุผลที่ระบุ",
+        });
+      }
       
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(401).json({ error: 'รหัสผ่านไม่ถูกต้อง' });
@@ -49,7 +64,7 @@ exports.login = async (req, res) => {
         expiresIn: '7d',
       });
       
-      res.json({ message: 'เข้าสู่ระบบสำเร็จ', token, user: { id: user.user_id, fullname: user.fullname, avatar: user.avatar, role: user.role } });
+      res.json({ message: 'เข้าสู่ระบบสำเร็จ', token, user: { id: user.user_id, fullname: user.fullname, avatar:  getAvatarUrl(user.avatar), role: user.role } });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Login failed' });

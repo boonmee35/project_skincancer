@@ -64,7 +64,7 @@ export default function CKEditorField({ value, onChange }) {
           items: [
             'heading', '|', 'bold', 'italic', 'underline', '|',
             'link', 'insertImage', 'mediaEmbed', 'insertTable', 'blockQuote',
-            '|', 'alignment', '|', 'bulletedList', 'numberedList', 'todoList',
+            '|', 'alignment', '|', 'bulletedList', 'numberedList',
             'outdent', 'indent'
           ],
         },
@@ -125,7 +125,7 @@ export default function CKEditorField({ value, onChange }) {
   }, [isLayoutReady]);
 
   return (
-    <div className="border rounded overflow-hidden">
+    <div className="h-[250px] border rounded overflow-hidden">
       {editorConfig && (
         <CKEditor
           editor={ClassicEditor}

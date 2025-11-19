@@ -4,6 +4,7 @@ import { FaSearch, FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
 import Pagination from "../components/Pagination";
 import ArticleModal from "../components/ArticleModal";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 function Articles() {
   const [articles, setArticles] = useState([]);
@@ -52,17 +53,28 @@ function Articles() {
   }
 
   const handleDeleteArticle = async (articleId) => {
-    if (window.confirm("คุณแน่ใจว่าต้องการลบบทความนี้?")) {
-      try {
-        await axios.delete(`${apiUrl}article/delete/${articleId}`);
-        toast.success("ลบบทความเรียบร้อยแล้ว");
-        fetchArticles();
-      } catch (error) {
-        console.error("Error deleting article:", error);
-        toast.error("เกิดข้อผิดพลาดในการลบบทความ");
+    Swal.fire({
+      title: "คุณแน่ใจหรือไม่?",
+      text: "คุณต้องการลบบทความนี้จริงๆ หรือไม่",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "ลบเลย",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`${apiUrl}article/delete/${articleId}`);
+          Swal.fire("ลบสำเร็จ!", "บทความถูกลบเรียบร้อยแล้ว", "success");
+          fetchArticles();
+        } catch (error) {
+          console.error("Error deleting article:", error);
+          Swal.fire("ผิดพลาด!", "ไม่สามารถลบบทความได้", "error");
+        }
       }
-    }
-  }
+    });
+  };
 
   // เปิด modal สำหรับเพิ่ม
   const openAddModal = () => {
@@ -85,7 +97,14 @@ function Articles() {
       await axios.post(apiUrl + "article/insert", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success("เพิ่มบทความเรียบร้อยแล้ว");
+      Swal.fire({
+        icon: "success",
+        title: "เพิ่มบทความเรียบร้อยแล้ว",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      //
+      // toast.success("เพิ่มบทความเรียบร้อยแล้ว");
     } else if (modalMode === "edit") {
       await axios.put(
         `${apiUrl}article/update/${currentArticle.article_id}`,
@@ -94,7 +113,14 @@ function Articles() {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      toast.success("แก้ไขบทความเรียบร้อยแล้ว");
+      Swal.fire({
+        icon: "success",
+        title: "แก้ไขบทความเรียบร้อยแล้ว",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      //
+      // toast.success("แก้ไขบทความเรียบร้อยแล้ว");
     }
 
     setShowModal(false);
@@ -120,7 +146,7 @@ function Articles() {
               placeholder="ค้นหาด้วยชื่อบทความ..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full border rounded-md pl-10 p-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full border rounded-md pl-10 p-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
             <FaSearch className="absolute top-3 left-3 text-gray-500" />
           </div>
@@ -134,13 +160,13 @@ function Articles() {
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border-collapse">
+          <table className="min-w-full table-auto border-b">
             <thead className="bg-blue-50 text-gray-700">
               <tr>
                 <th className="p-3 text-left">#</th>
                 <th className="p-3 text-left">ชื่อบทความ</th>
                 <th className="p-3 text-left">วันที่สร้าง</th>
-                <th className="p-3 text-center">วันที่อัปเดต</th>
+                <th className="p-3 text-left">ภาพหน้าปก</th>
                 <th className="p-3 text-center">การจัดการ</th>
               </tr>
             </thead>
@@ -162,7 +188,17 @@ function Articles() {
                     </td>
                     <td className="p-3">{article.title}</td>
                     <td className="p-3">{formatDate(article.created_at)}</td>
-                    <td className="p-3">{formatDate(article.updated_at)}</td>
+                    <td className="p-3 text-center">
+              {article.image_url ? (
+                <img
+                  src={article.image_url}
+                  alt="cover"
+                  className="w-16 h-16 object-cover rounded"
+                />
+              ) : (
+                <span className="text-gray-400 text-sm">ไม่มีภาพ</span>
+              )}
+            </td>
                     <td className="p-3 text-center flex justify-center gap-3">
                       <button className="text-yellow-500 hover:text-yellow-700" onClick={() => openEditModal(article)}>
                         <FaEdit />
