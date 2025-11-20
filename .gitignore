@@ -22,6 +22,11 @@ venv/
 **/venv/
 /skincancer.sql
 
+venv/
+ai_model/venv/
+__pycache__/
+*.pyd
+*.dll
 
 # Editor directories and files
 .vscode/*
